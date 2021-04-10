@@ -9,9 +9,9 @@
  * @author Sebastian
  */
 public class Access {
-    private final Direction dir;
-    private final int currFl;
-    private final int destFl;
+    private Direction dir;
+    private int currFl;
+    private int destFl;
     
     Access (int currFl, int destFl, Direction dir) {
         this.dir = dir;
@@ -28,6 +28,6 @@ public class Access {
     }
     
     Direction getDir(){
-        return this.getDir();
+        return this.dir;
     }
 }
