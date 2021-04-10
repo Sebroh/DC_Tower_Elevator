@@ -12,41 +12,50 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Sebastian
+ * @author Sebastian Rohrer
  */
-public class Elevator implements Runnable{
+
+public class Elevator extends Thread{
     
+    //Link to request Queue to receive active Request
     BlockingQueue<Access> requests = null;
     Access curr;
     
+    //Method that runs in the Thread
     @Override
     public void run() {
-        while (true) {
-            try {
-                curr = requests.take();
-                handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
-                
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Elevator.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            while (true) {
+                    //get next request in queue, if empty it waits
+                    curr = requests.take();
+                    handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
+
             }
-              
-        }
-        
+            
+        } catch (InterruptedException ex) {
+                System.out.println("Elevator: " + Thread.currentThread().getName() + " stopped!");
+            }
+       
     }
     
     Elevator(BlockingQueue<Access> request) {
         this.requests = request;
     }
     
+    //Elevator algorithm to handle multiple passengers on different floors 
+    //with the same direction
     void handleDest(int destFl, int currFl, Direction dir) throws InterruptedException {
+        
+        //stores the different floors it has to stop
+        ArrayList<Integer> floors = new ArrayList<>();
         int tmpFl = currFl;
-        ArrayList<Integer> floors = new ArrayList<Integer>();
         floors.add(destFl);
         
         System.out.println("Elevator: " + Thread.currentThread().getName() + 
                 " Person got on at: " + currFl + " People in Elevator: " + 
                 floors.size());
         
+        //the elevator goes in one direction unitl no passengers are left in it
         while(!floors.isEmpty()){
             System.out.println("Elevator: " + 
                     Thread.currentThread().getName() + " at Floor: " + tmpFl);
@@ -54,21 +63,31 @@ public class Elevator implements Runnable{
             
             if(dir == dir.UP) {
                 
+                //check if another request is in the buffer and if the elevator 
+                //could make a stopover
                 if (!requests.isEmpty()) {
-                    for (Access i : requests) {
-                        if (i.getDir() == dir && i.getCurr() <= tmpFl) {
+                    for (int i = 0;i < requests.size();i++) {
+                        
+                        //Blocking queue is not able to get specific element, so
+                        //every element from the queue is taken, checked and 
+                        //if not taken it gets added back
+                        Access req = requests.take();
+                        if (req.getDir() == dir && req.getCurr() <= tmpFl) {
                             
-                            floors.add(i.getDest());
+                            floors.add(req.getDest());
                             System.out.println("Elevator: " + 
                                     Thread.currentThread().getName() + 
-                                    " Person got on at: " + i.getCurr()+ 
+                                    " Person got on at: " + req.getCurr()+ 
                                     " People in Elevator: " + floors.size());
-                            requests.remove(i);
+                        } else {
+                            requests.add(req);
                         }
                         
                     }
                                         
                 }
+                
+                //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
                     if (floors.contains(tmpFl)) {
                         
@@ -82,24 +101,36 @@ public class Elevator implements Runnable{
                     
                 } 
                 
+                //moves elevator up
                 tmpFl += (!floors.isEmpty()) ? 1 : 0;
+                
+            //else direction is down
             } else {
                 
+                //check if another request is in the buffer and if the elevator 
+                //could make a stopover
                 if (!requests.isEmpty()) {
-                    for (Access i : requests) {
-                        if (i.getDir() == dir && i.getCurr() >= tmpFl) {
+                    for (int i = 0;i < requests.size();i++) {
+                        
+                        //Blocking queue is not able to get specific element, so
+                        //every element from the queue is taken, checked and 
+                        //if not taken it gets added back at the tail
+                        Access req = requests.take();
+                        if (req.getDir() == dir && req.getCurr() >= tmpFl) {
                             
-                            floors.add(i.getDest());
+                            floors.add(req.getDest());
                             System.out.println("Elevator: " +
                                     Thread.currentThread().getName() + 
-                                    " Person got on at: " + i.getCurr()+ 
+                                    " Person got on at: " + req.getCurr()+ 
                                     " People in Elevator: " + floors.size());
-                            requests.remove(i);
+                            
                         }
                         
                     } 
                     
                 }
+                
+                //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
                    if (floors.contains(tmpFl)) {
                        
@@ -112,13 +143,12 @@ public class Elevator implements Runnable{
                     } 
                 }
                 
-                
+                //moves elevator down 
                 tmpFl -= (!floors.isEmpty()) ? 1 : 0;
+                
             }
-            
-            
+               
         }
-        
         
     }
     
