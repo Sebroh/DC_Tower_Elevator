@@ -24,17 +24,12 @@ public class Elevator implements Runnable{
         while(true){
             try {
                 curr = requests.take();
+                handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
                 
             } catch (InterruptedException ex) {
                 Logger.getLogger(Elevator.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            try {
-                handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Elevator.class.getName()).log(Level.SEVERE, null, ex);
-            }
-  
+              
         }
         
     }
@@ -45,16 +40,66 @@ public class Elevator implements Runnable{
     
     void handleDest(int destFl, int currFl, Direction dir) throws InterruptedException{
         int tmpFl = currFl;
-        while(tmpFl != destFl){
+        ArrayList<Integer> floors = new ArrayList<Integer>();
+        floors.add(destFl);
+        System.out.println("Elevator: " + Thread.currentThread().getName() + " Person got on at: " + currFl + " People in Elevator: " + floors.size());
+        
+        while(!floors.isEmpty()){
+            System.out.println("Elevator: " + Thread.currentThread().getName() + " at Floor: " + tmpFl);
             Thread.sleep(300);
             if(dir == dir.UP) {
-                tmpFl += 1;
+                
+                if(!requests.isEmpty()){
+                    for (Access i : requests){
+                        if(i.getDir() == dir && i.getCurr() <= tmpFl){
+                            floors.add(i.getDest());
+                            System.out.println("Elevator: " + Thread.currentThread().getName() + " Person got on at: " + i.getCurr()+ " People in Elevator: " + floors.size());
+                            requests.remove(i);
+                        }
+                        
+                    }
+                                        
+                }
+                if(!floors.isEmpty()){
+                    if(floors.contains(tmpFl)){
+                        int index = floors.indexOf(tmpFl);
+                        System.out.println("Elevator: " + Thread.currentThread().getName() + " Person left at: " + tmpFl + " People in Elevator: " + (floors.size() - 1));
+                        floors.remove(index);
+                    }
+                    
+                } 
+                
+                
+                tmpFl += (!floors.isEmpty()) ? 1 : 0;
             } else {
-                tmpFl -= 1;
+                
+                if(!requests.isEmpty()){
+                    for (Access i : requests){
+                        if(i.getDir() == dir && i.getCurr() >= tmpFl){
+                            floors.add(i.getDest());
+                            System.out.println("Elevator: " + Thread.currentThread().getName() + " Person got on at: " + i.getCurr()+ " People in Elevator: " + floors.size());
+                            requests.remove(i);
+                        }
+                        
+                    } 
+                    
+                }
+                if(!floors.isEmpty()){
+                   if(floors.contains(tmpFl)){
+                        int index = floors.indexOf(tmpFl);
+                        System.out.println("Elevator: " + Thread.currentThread().getName() + " Person left at: " + tmpFl + " People in Elevator: " + (floors.size() - 1));
+                        floors.remove(index);
+                    } 
+                }
+                
+                
+                tmpFl -= (!floors.isEmpty()) ? 1 : 0;
             }
             
-            System.out.println("Elevator: " + Thread.currentThread().getName() + " at Floor: " + tmpFl);
+            
         }
+        
+        
     }
     
 }
