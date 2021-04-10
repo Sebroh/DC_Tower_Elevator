@@ -53,7 +53,7 @@ public class Elevator implements Runnable{
                 tmpFl -= 1;
             }
             
-            System.out.println("Elevator: " + Thread.currentThread().getId() + " at Floor: " + tmpFl);
+            System.out.println("Elevator: " + Thread.currentThread().getName() + " at Floor: " + tmpFl);
         }
     }
     
