@@ -6,12 +6,12 @@
 
 /**
  *
- * @author Sebastian
+ * @author Sebastian Rohrer
  */
 public class Access {
-    private Direction dir;
-    private int currFl;
-    private int destFl;
+    private Direction dir; //Direction
+    private int currFl;    //current Floor
+    private int destFl;    //destination Floor
     
     Access (int currFl, int destFl, Direction dir) {
         this.dir = dir;
