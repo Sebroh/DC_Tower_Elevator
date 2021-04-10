@@ -23,6 +23,15 @@ public class DCTower {
     BlockingQueue<Access> getQueue(){
         return this.requests;
     }
+    
+    DCTower() {
+        //create 7 Threads for each Elevator
+        for(int i = 1; i < 2; i++){
+            new Thread(new Elevator(this.requests)).start();
+        }
+        
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -31,27 +40,10 @@ public class DCTower {
         DCTower tower = new DCTower();
         
         Access a1 = new Access(1, 10, Direction.UP);
-        Access a2 = new Access(10, 1, Direction.DOWN);
+        Access a2 = new Access(3, 13, Direction.UP);
         
         tower.addQueue(a1);
         tower.addQueue(a2);
-        
-        Elevator e1 = new Elevator(tower.getQueue());
-        Elevator e2 = new Elevator(tower.getQueue());
-        Elevator e3 = new Elevator(tower.getQueue());
-        Elevator e4 = new Elevator(tower.getQueue());
-        Elevator e5 = new Elevator(tower.getQueue());
-        Elevator e6 = new Elevator(tower.getQueue());
-        Elevator e7 = new Elevator(tower.getQueue());
-      
-        new Thread(e1).start();
-        new Thread(e2).start();
-        new Thread(e3).start();
-        new Thread(e4).start();
-        new Thread(e5).start();
-        new Thread(e6).start();
-        new Thread(e7).start();
-        
     }
     
 }
