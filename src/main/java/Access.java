@@ -19,15 +19,15 @@ public class Access {
         this.destFl = destFl;
     }
     
-    int getCurr(){
+    int getCurr() {
         return this.currFl;
     }
     
-    int getDest(){
+    int getDest() {
         return this.destFl;
     }
     
-    Direction getDir(){
+    Direction getDir() {
         return this.dir;
     }
 }
