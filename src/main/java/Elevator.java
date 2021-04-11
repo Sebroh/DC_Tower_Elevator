@@ -20,6 +20,7 @@ public class Elevator extends Thread{
     //Link to request Queue to receive active Request
     BlockingQueue<Access> requests = null;
     Access curr;
+    int currentFloor = 0;
     
     
     //Method that runs in the Thread
@@ -29,6 +30,10 @@ public class Elevator extends Thread{
             while (!Thread.currentThread().isInterrupted()) {
                     //get next request in queue, if empty it waits
                     curr = requests.take();
+                    //drive Elevator to Passengers current Location, because
+                    //all Elevators start at 0
+                    driveToCurr(curr.getCurr());
+                    //bring Passengers to their destination
                     handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
 
             }
@@ -165,6 +170,30 @@ public class Elevator extends Thread{
                
         }
         
+        this.currentFloor = tmpFl;
+        
+    }
+    
+    void driveToCurr(int DestCurr) throws InterruptedException{
+        //check if Passenger is up or down to the current Elevator position
+        Direction dir = (DestCurr > this.currentFloor) ? Direction.UP : Direction.DOWN;
+        
+        if (dir == Direction.UP) {
+            while (this.currentFloor != DestCurr) {
+                System.out.println("Driving from current Floor: " + this.currentFloor 
+                        + " to Passenger Floor: " + DestCurr);
+                Thread.sleep(300);
+                this.currentFloor += 1;
+            }
+            
+        } else {
+            while (this.currentFloor != DestCurr) {
+                System.out.println("Driving from current Floor: " + this.currentFloor 
+                        + " to Passenger Floor: " + DestCurr);
+                Thread.sleep(300);
+                this.currentFloor -= 1;
+            }
+        }
     }
     
     
