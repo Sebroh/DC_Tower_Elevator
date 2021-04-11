@@ -1,6 +1,7 @@
+import java.lang.Thread.State;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,9 +17,9 @@ public class DCTower {
     
     //stores all requests from the user
     //is a thread safe queue, to provide access to multiple threads at once
-    BlockingQueue<Access> requests = new ArrayBlockingQueue(1024);
+    BlockingQueue<Access> requests = new LinkedBlockingQueue<>();
     
-    void addQueue(Access a) {
+    void addRequest(Access a) {
         requests.add(a);
     }
     
@@ -32,6 +33,23 @@ public class DCTower {
             new Thread(new Elevator(this.requests), String.valueOf(i)).start();
         }
     }
+    
+    void stopElevators() throws InterruptedException{
+        for(int i = 1;i < 8; i++){
+           //get all Elevator Threads
+           for(Thread t : Thread.getAllStackTraces().keySet()) {
+                if(t.getName().equals(String.valueOf(i))) {
+                    //wait till Elevators are empty and Threads are waiting 
+                    //for new Requests
+                    while(t.getState() != State.WAITING){
+                        Thread.sleep(500);
+                    }
+                    t.interrupt();
+                }
+            } 
+        }
+        
+    }
       
     
     /**
@@ -43,25 +61,23 @@ public class DCTower {
         DCTower tower = new DCTower();
         
         //add Elevator Requests
-        tower.addQueue(new Access(1, 10, Direction.UP));
-        tower.addQueue(new Access(3, 13, Direction.UP));
-        tower.addQueue(new Access(18, 8, Direction.DOWN));
-        tower.addQueue(new Access(35, 0, Direction.DOWN));
-        tower.addQueue(new Access(41, 45, Direction.UP));
-        tower.addQueue(new Access(0, 55, Direction.UP));
-        tower.addQueue(new Access(21, 45, Direction.UP));
-        tower.addQueue(new Access(12, 0, Direction.DOWN));
-        tower.addQueue(new Access(12, 32, Direction.UP));
+        tower.addRequest(new Access(1, 10, Direction.UP));
+        tower.addRequest(new Access(3, 13, Direction.UP));
+        tower.addRequest(new Access(18, 8, Direction.DOWN));
+        tower.addRequest(new Access(35, 0, Direction.DOWN));
+        tower.addRequest(new Access(41, 45, Direction.UP));
+        tower.addRequest(new Access(0, 55, Direction.UP));
+        tower.addRequest(new Access(21, 45, Direction.UP));
+        tower.addRequest(new Access(12, 0, Direction.DOWN));
+        tower.addRequest(new Access(12, 32, Direction.UP));
         Thread.sleep(4000);
-        tower.addQueue(new Access(54, 4, Direction.DOWN));
-        tower.addQueue(new Access(0, 48, Direction.UP));
+        tower.addRequest(new Access(54, 4, Direction.DOWN));
+        tower.addRequest(new Access(0, 48, Direction.UP));
         Thread.sleep(12000);
-        tower.addQueue(new Access(5, 19, Direction.UP));
-        tower.addQueue(new Access(37, 9, Direction.DOWN));
+        tower.addRequest(new Access(5, 19, Direction.UP));
+        tower.addRequest(new Access(37, 9, Direction.DOWN));
         
-        
-        Thread.sleep(10000);
-        System.exit(0);  
+        tower.stopElevators();
     }
     
 }
