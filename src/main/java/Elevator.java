@@ -21,11 +21,12 @@ public class Elevator extends Thread{
     BlockingQueue<Access> requests = null;
     Access curr;
     
+    
     //Method that runs in the Thread
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                     //get next request in queue, if empty it waits
                     curr = requests.take();
                     handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
@@ -101,6 +102,13 @@ public class Elevator extends Thread{
                     
                 } 
                 
+                if(tmpFl > 55){
+                    System.out.println("Elevator: " + 
+                            Thread.currentThread().getName() + 
+                            " Elevator Dest: " + floors.get(0));
+                    break;
+                }
+                
                 //moves elevator up
                 tmpFl += (!floors.isEmpty()) ? 1 : 0;
                 
@@ -143,6 +151,13 @@ public class Elevator extends Thread{
                     } 
                 }
                 
+                if(tmpFl < 0){
+                    System.out.println("Elevator: " + 
+                            Thread.currentThread().getName() + 
+                            " Elevator Dest: " + floors.get(0));
+                    break;
+                }
+                
                 //moves elevator down 
                 tmpFl -= (!floors.isEmpty()) ? 1 : 0;
                 
@@ -151,5 +166,7 @@ public class Elevator extends Thread{
         }
         
     }
+    
+    
     
 }
