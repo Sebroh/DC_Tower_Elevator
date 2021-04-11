@@ -70,6 +70,8 @@ public class DCTower {
         tower.addRequest(new Access(21, 45, Direction.UP));
         tower.addRequest(new Access(12, 0, Direction.DOWN));
         tower.addRequest(new Access(12, 32, Direction.UP));
+        tower.addRequest(new Access(55, 0, Direction.DOWN));
+        tower.addRequest(new Access(23, 32, Direction.UP));
         Thread.sleep(4000);
         tower.addRequest(new Access(54, 4, Direction.DOWN));
         tower.addRequest(new Access(0, 48, Direction.UP));
