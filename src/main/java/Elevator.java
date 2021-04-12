@@ -19,7 +19,9 @@ public class Elevator extends Thread{
     
     //Link to request Queue to receive active Request
     BlockingQueue<Access> requests = null;
+    //current Passangers Request
     Access curr;
+    //current Floor of the Elevator
     int currentFloor = 0;
     
     
@@ -32,14 +34,17 @@ public class Elevator extends Thread{
                     curr = requests.take();
                     //drive Elevator to Passengers current Location, because
                     //all Elevators start at 0
-                    driveToCurr(curr.getCurr());
+                     if(curr.getCurr() != this.currentFloor){
+                        driveToCurr(curr.getCurr());
+                    }
                     //bring Passengers to their destination
                     handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
 
             }
             
         } catch (InterruptedException ex) {
-                System.out.println("Elevator: " + Thread.currentThread().getName() + " stopped!");
+                System.out.println("Elevator: " + Thread.currentThread().getName() 
+                        + " stopped!");
             }
        
     }
@@ -54,7 +59,7 @@ public class Elevator extends Thread{
         
         //stores the different floors it has to stop
         ArrayList<Integer> floors = new ArrayList<>();
-        int tmpFl = currFl;
+        
         floors.add(destFl);
         
         System.out.println("Elevator: " + Thread.currentThread().getName() + 
@@ -63,115 +68,120 @@ public class Elevator extends Thread{
         
         //the elevator goes in one direction unitl no passengers are left in it
         while(!floors.isEmpty()){
+            
             System.out.println("Elevator: " + 
-                    Thread.currentThread().getName() + " at Floor: " + tmpFl);
+                    Thread.currentThread().getName() + " at Floor: " + this.currentFloor);
             Thread.sleep(300);
             
             if(dir == dir.UP) {
                 
                 //check if another request is in the buffer and if the elevator 
                 //could make a stopover
-                if (!requests.isEmpty()) {
-                    for (int i = 0;i < requests.size();i++) {
-                        
-                        //Blocking queue is not able to get specific element, so
-                        //every element from the queue is taken, checked and 
-                        //if not taken it gets added back
-                        Access req = requests.take();
-                        if (req.getDir() == dir && req.getCurr() <= tmpFl) {
-                            
-                            floors.add(req.getDest());
-                            System.out.println("Elevator: " + 
-                                    Thread.currentThread().getName() + 
-                                    " Person got on at: " + req.getCurr()+ 
-                                    " People in Elevator: " + floors.size());
-                        } else {
-                            requests.add(req);
+                synchronized (this){
+                    if (!requests.isEmpty()) {
+                        for (int i = 0;i < requests.size();i++) {
+
+                            //Blocking queue is not able to get specific element, so
+                            //every element from the queue is taken, checked and 
+                            //if not taken it gets added back
+                            Access req = requests.take();
+                            if (req.getDir() == dir && req.getCurr() == this.currentFloor) {
+
+                                floors.add(req.getDest());
+                                System.out.println("Elevator: " + 
+                                        Thread.currentThread().getName() + 
+                                        " Person got on at: " + req.getCurr()+ 
+                                        " People in Elevator: " + floors.size());
+                            } else {
+                                requests.add(req);
+                            }
+
                         }
-                        
+
                     }
-                                        
                 }
+                
                 
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
-                    if (floors.contains(tmpFl)) {
+                    if (floors.contains(this.currentFloor)) {
                         
-                        int index = floors.indexOf(tmpFl);
+                        int index = floors.indexOf(this.currentFloor);
                         System.out.println("Elevator: " + 
                                 Thread.currentThread().getName() + 
-                                " Person left at: " + tmpFl + 
+                                " Person left at: " + this.currentFloor + 
                                 " People in Elevator: " + (floors.size() - 1));
                         floors.remove(index);
                     }
                     
                 } 
                 
-                if(tmpFl > 55){
-                    System.out.println("Elevator: " + 
+                if(this.currentFloor > 55){
+                    System.out.println("FALSE Elevator: " + 
                             Thread.currentThread().getName() + 
                             " Elevator Dest: " + floors.get(0));
                     break;
                 }
                 
                 //moves elevator up
-                tmpFl += (!floors.isEmpty()) ? 1 : 0;
+                this.currentFloor += (!floors.isEmpty()) ? 1 : 0;
                 
             //else direction is down
             } else {
                 
                 //check if another request is in the buffer and if the elevator 
                 //could make a stopover
-                if (!requests.isEmpty()) {
-                    for (int i = 0;i < requests.size();i++) {
-                        
-                        //Blocking queue is not able to get specific element, so
-                        //every element from the queue is taken, checked and 
-                        //if not taken it gets added back at the tail
-                        Access req = requests.take();
-                        if (req.getDir() == dir && req.getCurr() >= tmpFl) {
-                            
-                            floors.add(req.getDest());
-                            System.out.println("Elevator: " +
-                                    Thread.currentThread().getName() + 
-                                    " Person got on at: " + req.getCurr()+ 
-                                    " People in Elevator: " + floors.size());
-                            
-                        }
-                        
-                    } 
-                    
+                synchronized (this){
+                    if (!requests.isEmpty()) {
+                        for (int i = 0;i < requests.size();i++) {
+
+                            //Blocking queue is not able to get specific element, so
+                            //every element from the queue is taken, checked and 
+                            //if not taken it gets added back at the tail
+                            Access req = requests.take();
+                            if (req.getDir() == dir && req.getCurr() == this.currentFloor) {
+
+                                floors.add(req.getDest());
+                                System.out.println("Elevator: " +
+                                        Thread.currentThread().getName() + 
+                                        " Person got on at: " + req.getCurr()+ 
+                                        " People in Elevator: " + floors.size());
+
+                            }
+
+                        } 
+
+                    }
                 }
+                
                 
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
-                   if (floors.contains(tmpFl)) {
+                   if (floors.contains(this.currentFloor)) {
                        
-                        int index = floors.indexOf(tmpFl);
+                        int index = floors.indexOf(this.currentFloor);
                         System.out.println("Elevator: " + 
                                 Thread.currentThread().getName() + 
-                                " Person left at: " + tmpFl + 
+                                " Person left at: " + this.currentFloor + 
                                 " People in Elevator: " + (floors.size() - 1));
                         floors.remove(index);
                     } 
                 }
                 
-                if(tmpFl < 0){
-                    System.out.println("Elevator: " + 
+                if(this.currentFloor < 0){
+                    System.out.println("FALSE Elevator: " + 
                             Thread.currentThread().getName() + 
                             " Elevator Dest: " + floors.get(0));
                     break;
                 }
                 
                 //moves elevator down 
-                tmpFl -= (!floors.isEmpty()) ? 1 : 0;
+                this.currentFloor -= (!floors.isEmpty()) ? 1 : 0;
                 
             }
                
         }
-        
-        this.currentFloor = tmpFl;
-        
+                
     }
     
     void driveToCurr(int DestCurr) throws InterruptedException{
@@ -180,7 +190,8 @@ public class Elevator extends Thread{
         
         if (dir == Direction.UP) {
             while (this.currentFloor != DestCurr) {
-                System.out.println("Driving from current Floor: " + this.currentFloor 
+                System.out.println("Elevator: " + Thread.currentThread().getName() + 
+                        " is driving from current Floor: " + this.currentFloor 
                         + " to Passenger Floor: " + DestCurr);
                 Thread.sleep(300);
                 this.currentFloor += 1;
@@ -188,7 +199,8 @@ public class Elevator extends Thread{
             
         } else {
             while (this.currentFloor != DestCurr) {
-                System.out.println("Driving from current Floor: " + this.currentFloor 
+                System.out.println("Elevator: " + Thread.currentThread().getName() + 
+                        " is driving from current Floor: " + this.currentFloor 
                         + " to Passenger Floor: " + DestCurr);
                 Thread.sleep(300);
                 this.currentFloor -= 1;
