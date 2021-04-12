@@ -66,16 +66,19 @@ public class DCTower {
         tower.addRequest(new Access(18, 8, Direction.DOWN));
         tower.addRequest(new Access(35, 0, Direction.DOWN));
         tower.addRequest(new Access(41, 45, Direction.UP));
+        tower.addRequest(new Access(42, 51, Direction.UP));
         tower.addRequest(new Access(0, 55, Direction.UP));
+        tower.addRequest(new Access(43, 50, Direction.UP));
+        tower.addRequest(new Access(55, 23, Direction.DOWN));
         tower.addRequest(new Access(21, 45, Direction.UP));
         tower.addRequest(new Access(12, 0, Direction.DOWN));
         tower.addRequest(new Access(12, 32, Direction.UP));
         tower.addRequest(new Access(55, 0, Direction.DOWN));
         tower.addRequest(new Access(23, 32, Direction.UP));
-        Thread.sleep(4000);
         tower.addRequest(new Access(54, 4, Direction.DOWN));
         tower.addRequest(new Access(0, 48, Direction.UP));
-        Thread.sleep(12000);
+        tower.addRequest(new Access(5, 38, Direction.UP));
+        tower.addRequest(new Access(32, 31, Direction.DOWN));
         tower.addRequest(new Access(5, 19, Direction.UP));
         tower.addRequest(new Access(37, 9, Direction.DOWN));
         
