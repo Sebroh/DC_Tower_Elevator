@@ -109,4 +109,26 @@ public class DCTowerTest {
         assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
     }
     
+
+    @Test
+    public void testSameFloor() throws InterruptedException {
+        DCTower tower = new DCTower();
+        
+        tower.addRequest(new Access(4, 25, Direction.UP));
+        tower.addRequest(new Access(3, 25, Direction.UP));
+        tower.addRequest(new Access(34, 25, Direction.DOWN));
+        tower.addRequest(new Access(31, 25, Direction.DOWN));
+        tower.addRequest(new Access(41, 25, Direction.DOWN));
+        tower.addRequest(new Access(42, 25, Direction.DOWN));
+        tower.addRequest(new Access(0, 25, Direction.UP));
+        tower.addRequest(new Access(3, 25, Direction.UP));
+        tower.addRequest(new Access(45, 25, Direction.DOWN));
+        tower.addRequest(new Access(26, 25, Direction.DOWN));
+        tower.addRequest(new Access(1, 25, Direction.UP));
+        
+        tower.stopElevators();
+
+        assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
+    }
+    
 }
