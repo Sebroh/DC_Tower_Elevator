@@ -16,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
 public final class Elevator extends Thread{
     
     //Link to request Queue to receive active Request
-    private BlockingQueue<Access> requests = null;
+    final private BlockingQueue<Access> requests;
     //current Passangers Request
     private Access curr;
     //current Floor of the Elevator
@@ -110,8 +110,9 @@ public final class Elevator extends Thread{
                     
                 } 
                 
+                //Check if Elevator drives correctly and doesnt move to high
                 if(this.currentFloor > 55){
-                    System.out.println("FALSE Elevator: " + 
+                    System.out.println("Elevator: " + 
                             Thread.currentThread().getName() + 
                             " Elevator Dest: " + floors.get(0));
                     break;
@@ -164,8 +165,9 @@ public final class Elevator extends Thread{
                     } 
                 }
                 
+                //Check if Elevator drives correctly and doesnt move to low
                 if(this.currentFloor < 0){
-                    System.out.println("FALSE Elevator: " + 
+                    System.out.println("Elevator: " + 
                             Thread.currentThread().getName() + 
                             " Elevator Dest: " + floors.get(0));
                     break;
