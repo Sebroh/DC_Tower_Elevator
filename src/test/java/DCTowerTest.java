@@ -43,8 +43,33 @@ public class DCTowerTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
+    
+    /**
+     *
+     * @throws InterruptedException
+     */
+    
     @Test
-    public void testElevators() throws InterruptedException {
+    public void test10People() throws InterruptedException {
+        DCTower tower = new DCTower();
+        
+        tower.addRequest(new Access(4, 34, Direction.UP));
+        tower.addRequest(new Access(3, 31, Direction.UP));
+        tower.addRequest(new Access(34, 8, Direction.DOWN));
+        tower.addRequest(new Access(31, 13, Direction.DOWN));
+        tower.addRequest(new Access(41, 55, Direction.UP));
+        tower.addRequest(new Access(42, 43, Direction.UP));
+        tower.addRequest(new Access(0, 55, Direction.UP));
+        tower.addRequest(new Access(3, 50, Direction.UP));
+        tower.addRequest(new Access(45, 23, Direction.DOWN));
+        tower.addRequest(new Access(26, 48, Direction.UP));
+        
+        tower.stopElevators();
+
+        assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
+    }
+    
+    public void test20People() throws InterruptedException {
         DCTower tower = new DCTower();
         
         tower.addRequest(new Access(1, 10, Direction.UP));
@@ -72,4 +97,21 @@ public class DCTowerTest {
 
         assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
     }
+    
+    public void test7People() throws InterruptedException {
+        DCTower tower = new DCTower();
+        
+        tower.addRequest(new Access(5, 16, Direction.UP));
+        tower.addRequest(new Access(9, 23, Direction.UP));
+        tower.addRequest(new Access(55, 43, Direction.DOWN));
+        tower.addRequest(new Access(23, 0, Direction.DOWN));
+        tower.addRequest(new Access(32, 31, Direction.DOWN));
+        tower.addRequest(new Access(5, 19, Direction.UP));
+        tower.addRequest(new Access(37, 9, Direction.DOWN));
+        
+        tower.stopElevators();
+
+        assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
+    }
+    
 }
