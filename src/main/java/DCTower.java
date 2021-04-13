@@ -1,5 +1,4 @@
 import java.lang.Thread.State;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -16,9 +15,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class DCTower {
     private final BlockingQueue<Access> requests;
     
-//stores all requests from the user
+    //stores all requests from the user
     //is a thread safe queue, to provide access to multiple threads at once
-        void addRequest(Access a) {
+    void addRequest(Access a) {
         requests.add(a);
     }
     
@@ -51,22 +50,10 @@ public final class DCTower {
         }
         
     }
-
-    @Override
-    public String toString() {
-        return "DCTower{" + "requests=" + requests + '}';
-    }
-      
     
-    /**
-     * @param args the command line arguments
-     * @throws java.lang.InterruptedException
-     */
-    
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException{
         DCTower tower = new DCTower();
         
-        //add Elevator Requests
         tower.addRequest(new Access(1, 10, Direction.UP));
         tower.addRequest(new Access(3, 13, Direction.UP));
         tower.addRequest(new Access(18, 8, Direction.DOWN));
