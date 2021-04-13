@@ -1,8 +1,6 @@
-
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,15 +13,14 @@ import java.util.logging.Logger;
  * @author Sebastian Rohrer
  */
 
-public class Elevator extends Thread{
+public final class Elevator extends Thread{
     
     //Link to request Queue to receive active Request
-    BlockingQueue<Access> requests = null;
+    private BlockingQueue<Access> requests = null;
     //current Passangers Request
-    Access curr;
+    private Access curr;
     //current Floor of the Elevator
-    int currentFloor = 0;
-    
+    private int currentFloor;
     
     //Method that runs in the Thread
     @Override
@@ -38,6 +35,8 @@ public class Elevator extends Thread{
                         driveToCurr(curr.getCurr());
                     }
                     //bring Passengers to their destination
+                    System.out.println("Elevator: " + Thread.currentThread().getName() 
+                            + " got Request: " + curr.toString() + "People in Elevator: 1");
                     handleDest(curr.getDest(), curr.getCurr(), curr.getDir());
 
             }
@@ -50,6 +49,7 @@ public class Elevator extends Thread{
     }
     
     Elevator(BlockingQueue<Access> request) {
+        this.currentFloor = 0;
         this.requests = request;
     }
     
@@ -62,10 +62,6 @@ public class Elevator extends Thread{
         
         floors.add(destFl);
         
-        System.out.println("Elevator: " + Thread.currentThread().getName() + 
-                " Person got on at: " + currFl + " People in Elevator: " + 
-                floors.size());
-        
         //the elevator goes in one direction unitl no passengers are left in it
         while(!floors.isEmpty()){
             
@@ -77,28 +73,26 @@ public class Elevator extends Thread{
                 
                 //check if another request is in the buffer and if the elevator 
                 //could make a stopover
-                synchronized (this){
-                    if (!requests.isEmpty()) {
-                        for (int i = 0;i < requests.size();i++) {
+                if (!requests.isEmpty()) {
+                    for (int i = 0;i < requests.size();i++) {
 
-                            //Blocking queue is not able to get specific element, so
-                            //every element from the queue is taken, checked and 
-                            //if not taken it gets added back
-                            Access req = requests.take();
-                            if (req.getDir() == dir && req.getCurr() == this.currentFloor) {
+                        //Blocking queue is not able to get specific element, so
+                        //every element from the queue is taken, checked and 
+                        //if not taken it gets added back
+                        Access req = requests.take();
+                        if (req.getDir() == dir && req.getCurr() == this.currentFloor) {
 
-                                floors.add(req.getDest());
-                                System.out.println("Elevator: " + 
-                                        Thread.currentThread().getName() + 
-                                        " Person got on at: " + req.getCurr()+ 
-                                        " People in Elevator: " + floors.size());
-                            } else {
-                                requests.add(req);
-                            }
-
+                            floors.add(req.getDest());
+                            System.out.println("Elevator: " + 
+                                    Thread.currentThread().getName() + 
+                                    " Person got on at: " + req.toString()+ 
+                                    " People in Elevator: " + floors.size());
+                        } else {
+                            requests.add(req);
                         }
 
                     }
+
                 }
                 
                 
@@ -131,27 +125,29 @@ public class Elevator extends Thread{
                 
                 //check if another request is in the buffer and if the elevator 
                 //could make a stopover
-                synchronized (this){
-                    if (!requests.isEmpty()) {
-                        for (int i = 0;i < requests.size();i++) {
+                
+                if (!requests.isEmpty()) {
+                    for (int i = 0;i < requests.size();i++) {
 
-                            //Blocking queue is not able to get specific element, so
-                            //every element from the queue is taken, checked and 
-                            //if not taken it gets added back at the tail
-                            Access req = requests.take();
-                            if (req.getDir() == dir && req.getCurr() == this.currentFloor) {
+                        //Blocking queue is not able to get specific element, so
+                        //every element from the queue is taken, checked and 
+                        //if not taken it gets added back at the tail
+                        Access req = requests.take();
+                        if (req.getDir() == dir && req.getCurr() == this.currentFloor) {
 
-                                floors.add(req.getDest());
-                                System.out.println("Elevator: " +
-                                        Thread.currentThread().getName() + 
-                                        " Person got on at: " + req.getCurr()+ 
-                                        " People in Elevator: " + floors.size());
+                            floors.add(req.getDest());
+                            System.out.println("Elevator: " +
+                                    Thread.currentThread().getName() + 
+                                    " Person got on at: " + req.toString()+ 
+                                    " People in Elevator: " + floors.size());
 
-                            }
+                        } else {
+                            requests.add(req);
+                        }
 
-                        } 
+                    } 
 
-                    }
+                    
                 }
                 
                 
@@ -207,6 +203,14 @@ public class Elevator extends Thread{
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Elevator{" + "curr=" + curr.toString() + ", currentFloor=" + currentFloor + '}';
+    }
+
+   
+    
     
     
     
