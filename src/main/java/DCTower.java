@@ -13,13 +13,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Sebastian Rohrer
  */
-public class DCTower {
+public final class DCTower {
+    private final BlockingQueue<Access> requests;
     
-    //stores all requests from the user
+//stores all requests from the user
     //is a thread safe queue, to provide access to multiple threads at once
-    BlockingQueue<Access> requests = new LinkedBlockingQueue<>();
-    
-    void addRequest(Access a) {
+        void addRequest(Access a) {
         requests.add(a);
     }
     
@@ -28,6 +27,7 @@ public class DCTower {
     }
     
     DCTower() {
+        this.requests = new LinkedBlockingQueue<>();
         //creates 7 Threads for each Elevator
         for (int i = 1; i < 8; i++) {
             new Thread(new Elevator(this.requests), String.valueOf(i)).start();
@@ -35,6 +35,7 @@ public class DCTower {
     }
     
     void stopElevators() throws InterruptedException{
+        while(!requests.isEmpty()) continue;
         for(int i = 1;i < 8; i++){
            //get all Elevator Threads
            for(Thread t : Thread.getAllStackTraces().keySet()) {
@@ -49,6 +50,11 @@ public class DCTower {
             } 
         }
         
+    }
+
+    @Override
+    public String toString() {
+        return "DCTower{" + "requests=" + requests + '}';
     }
       
     
