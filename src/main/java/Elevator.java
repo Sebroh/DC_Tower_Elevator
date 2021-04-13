@@ -95,7 +95,6 @@ public final class Elevator extends Thread{
 
                 }
                 
-                
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
                     if (floors.contains(this.currentFloor)) {
@@ -151,7 +150,6 @@ public final class Elevator extends Thread{
                     
                 }
                 
-                
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
                    if (floors.contains(this.currentFloor)) {
@@ -179,6 +177,7 @@ public final class Elevator extends Thread{
             }
                
         }
+        
                 
     }
     
@@ -204,16 +203,6 @@ public final class Elevator extends Thread{
                 this.currentFloor -= 1;
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Elevator{" + "curr=" + curr.toString() + ", currentFloor=" + currentFloor + '}';
-    }
-
-   
-    
-    
-    
+    }  
     
 }
