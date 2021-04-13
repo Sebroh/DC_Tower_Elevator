@@ -103,7 +103,6 @@ public final class Elevator extends Thread{
                     //behavi0r would occur
                     for(int i = floors.size() - 1 ; i >= 0 ; i--){
                         if(floors.get(i) == this.currentFloor){
-                            int index = floors.indexOf(i);
                             System.out.println("Elevator: " + 
                                 Thread.currentThread().getName() + 
                                 " Person left at: " + this.currentFloor + 
@@ -164,7 +163,6 @@ public final class Elevator extends Thread{
                     //behavi0r would occur
                    for(int i = floors.size() - 1 ; i >= 0 ; i--){
                         if(floors.get(i) == this.currentFloor){
-                            int index = floors.indexOf(i);
                             System.out.println("Elevator: " + 
                                 Thread.currentThread().getName() + 
                                 " Person left at: " + this.currentFloor + 
