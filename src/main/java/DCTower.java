@@ -1,6 +1,7 @@
 import java.lang.Thread.State;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -8,11 +9,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public final class DCTower {
     private final BlockingQueue<Access> requests;
+    //every Thread increments this counter if a person left the Elevator
+    private final AtomicInteger leaveCounter; 
+    //gets incremented if a person gets in the Elevator
+    private int enterCouter;
+    
     
     //stores all requests from the user
     //is a thread safe queue, to provide access to multiple threads at once
     void addRequest(Access a) {
         requests.add(a);
+        this.enterCouter++;
     }
     
     BlockingQueue<Access> getQueue() {
@@ -20,15 +27,16 @@ public final class DCTower {
     }
     
     DCTower() {
+        this.leaveCounter = new AtomicInteger();
         this.requests = new LinkedBlockingQueue<>();
         //creates 7 Threads for each Elevator
         for (int i = 1; i < 8; i++) {
-            new Thread(new Elevator(this.requests), String.valueOf(i)).start();
+            new Thread(new Elevator(this.requests, this.leaveCounter), String.valueOf(i)).start();
         }
     }
     
     void stopElevators() throws InterruptedException{
-        while(!requests.isEmpty()) continue;
+        while(!requests.isEmpty()) 
         for(int i = 1;i < 8; i++){
            //get all Elevator Threads
            for(Thread t : Thread.getAllStackTraces().keySet()) {
@@ -43,6 +51,14 @@ public final class DCTower {
             } 
         }
         
+    }
+    
+    int getLeaveCounter(){
+        return this.leaveCounter.get();
+    }
+    
+    int getEnterCounter(){
+        return this.enterCouter;
     }
     
     public static void main(String[] args) throws InterruptedException{
