@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -15,6 +16,8 @@ public final class Elevator extends Thread{
     private Access curr;
     //current Floor of the Elevator
     private int currentFloor;
+    //counter gets incremented for every person that leaves for testing purposes
+    AtomicInteger leaveCounter;
     
     //Method that runs in the Thread
     @Override
@@ -42,9 +45,10 @@ public final class Elevator extends Thread{
        
     }
     
-    Elevator(BlockingQueue<Access> request) {
+    Elevator(BlockingQueue<Access> request, AtomicInteger leaveCounter) {
         this.currentFloor = 0;
         this.requests = request;
+        this.leaveCounter = leaveCounter;
     }
     
     //Elevator algorithm to handle multiple passengers on different floors 
@@ -89,16 +93,20 @@ public final class Elevator extends Thread{
 
                 }
                 
+                
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
-                    if (floors.contains(this.currentFloor)) {
-                        
-                        int index = floors.indexOf(this.currentFloor);
-                        System.out.println("Elevator: " + 
+                    //if more than one people leave at the same floor 
+                    for(int i = 0;i < floors.size();i++){
+                        if(floors.get(i) == this.currentFloor){
+                            int index = floors.indexOf(i);
+                            System.out.println("Elevator: " + 
                                 Thread.currentThread().getName() + 
                                 " Person left at: " + this.currentFloor + 
                                 " People in Elevator: " + (floors.size() - 1));
-                        floors.remove(index);
+                            floors.remove(i);
+                            leaveCounter.getAndIncrement();
+                        }
                     }
                     
                 } 
@@ -119,7 +127,6 @@ public final class Elevator extends Thread{
                 
                 //check if another request is in the buffer and if the elevator 
                 //could make a stopover
-                
                 if (!requests.isEmpty()) {
                     for (int i = 0;i < requests.size();i++) {
 
@@ -141,20 +148,23 @@ public final class Elevator extends Thread{
 
                     } 
 
-                    
                 }
+                
                 
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
-                   if (floors.contains(this.currentFloor)) {
-                       
-                        int index = floors.indexOf(this.currentFloor);
-                        System.out.println("Elevator: " + 
+                    //if more than one people leave at the same floor 
+                   for(int i = 0;i < floors.size();i++){
+                        if(floors.get(i) == this.currentFloor){
+                            int index = floors.indexOf(i);
+                            System.out.println("Elevator: " + 
                                 Thread.currentThread().getName() + 
                                 " Person left at: " + this.currentFloor + 
                                 " People in Elevator: " + (floors.size() - 1));
-                        floors.remove(index);
-                    } 
+                            floors.remove(i);
+                            leaveCounter.getAndIncrement();
+                        }
+                    }
                 }
                 
                 //Check if Elevator drives correctly and doesnt move to low
