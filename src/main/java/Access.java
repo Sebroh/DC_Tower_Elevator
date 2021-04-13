@@ -9,14 +9,15 @@
  * @author Sebastian Rohrer
  */
 public class Access {
-    private Direction dir; //Direction
-    private int currFl;    //current Floor
-    private int destFl;    //destination Floor
+    final private Direction dir; //Direction
+    final private int currFl;    //current Floor
+    final private int destFl;    //destination Floor
     
     Access (int currFl, int destFl, Direction dir) {
         this.dir = dir;
         this.currFl = currFl;
         this.destFl = destFl;
+        
     }
     
     int getCurr() {
@@ -30,4 +31,11 @@ public class Access {
     Direction getDir() {
         return this.dir;
     }
+
+    @Override
+    public String toString() {
+        return "Access { " + "dir=" + dir + ", currFl=" + currFl + ", destFl=" + destFl +  " } ";
+    }
+    
+    
 }
