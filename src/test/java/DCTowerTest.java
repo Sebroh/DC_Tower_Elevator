@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
- * @author Sebastian
+ * @author Sebastian Rohrer
  */
 public class DCTowerTest {
     
@@ -23,12 +23,12 @@ public class DCTowerTest {
     }
     
     @BeforeAll
-    public void setUpClass() {
+    public static void setUpClass() {
         
     }
     
     @AfterAll
-    public void tearDownClass(){
+    public static void tearDownClass(){
         
     }
     
@@ -40,14 +40,24 @@ public class DCTowerTest {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
+   
+   @Test
+    public void test7People() throws InterruptedException {
+        DCTower tower = new DCTower();
+        
+        tower.addRequest(new Access(5, 16, Direction.UP));
+        tower.addRequest(new Access(9, 23, Direction.UP));
+        tower.addRequest(new Access(55, 43, Direction.DOWN));
+        tower.addRequest(new Access(23, 0, Direction.DOWN));
+        tower.addRequest(new Access(32, 31, Direction.DOWN));
+        tower.addRequest(new Access(5, 19, Direction.UP));
+        tower.addRequest(new Access(37, 9, Direction.DOWN));
+        
+        tower.stopElevators();
+
+        assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
+    }
     
-    /**
-     *
-     * @throws InterruptedException
-     */
     
     @Test
     public void test10People() throws InterruptedException {
@@ -69,6 +79,7 @@ public class DCTowerTest {
         assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
     }
     
+    @Test
     public void test20People() throws InterruptedException {
         DCTower tower = new DCTower();
         
@@ -89,22 +100,6 @@ public class DCTowerTest {
         tower.addRequest(new Access(54, 4, Direction.DOWN));
         tower.addRequest(new Access(0, 48, Direction.UP));
         tower.addRequest(new Access(5, 38, Direction.UP));
-        tower.addRequest(new Access(32, 31, Direction.DOWN));
-        tower.addRequest(new Access(5, 19, Direction.UP));
-        tower.addRequest(new Access(37, 9, Direction.DOWN));
-        
-        tower.stopElevators();
-
-        assertEquals(tower.getEnterCounter(), tower.getLeaveCounter());
-    }
-    
-    public void test7People() throws InterruptedException {
-        DCTower tower = new DCTower();
-        
-        tower.addRequest(new Access(5, 16, Direction.UP));
-        tower.addRequest(new Access(9, 23, Direction.UP));
-        tower.addRequest(new Access(55, 43, Direction.DOWN));
-        tower.addRequest(new Access(23, 0, Direction.DOWN));
         tower.addRequest(new Access(32, 31, Direction.DOWN));
         tower.addRequest(new Access(5, 19, Direction.UP));
         tower.addRequest(new Access(37, 9, Direction.DOWN));
