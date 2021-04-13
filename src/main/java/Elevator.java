@@ -97,7 +97,11 @@ public final class Elevator extends Thread{
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
                     //if more than one people leave at the same floor 
-                    for(int i = 0;i < floors.size();i++){
+                    //if more than one people leave at the same floor
+                    //the loop reverses backwards, because remove shifts all elements
+                    //of the arraylist to the left, if looped forwards undifiend
+                    //behavi0r would occur
+                    for(int i = floors.size() - 1 ; i >= 0 ; i--){
                         if(floors.get(i) == this.currentFloor){
                             int index = floors.indexOf(i);
                             System.out.println("Elevator: " + 
@@ -106,6 +110,7 @@ public final class Elevator extends Thread{
                                 " People in Elevator: " + (floors.size() - 1));
                             floors.remove(i);
                             leaveCounter.getAndIncrement();
+                            
                         }
                     }
                     
@@ -153,8 +158,11 @@ public final class Elevator extends Thread{
                 
                 //checks if a destination floor is reached
                 if (!floors.isEmpty()) {
-                    //if more than one people leave at the same floor 
-                   for(int i = 0;i < floors.size();i++){
+                    //if more than one people leave at the same floor
+                    //the loop reverses backwards, because remove shifts all elements
+                    //of the arraylist to the left, if looped forwards undifiend
+                    //behavi0r would occur
+                   for(int i = floors.size() - 1 ; i >= 0 ; i--){
                         if(floors.get(i) == this.currentFloor){
                             int index = floors.indexOf(i);
                             System.out.println("Elevator: " + 
@@ -163,6 +171,7 @@ public final class Elevator extends Thread{
                                 " People in Elevator: " + (floors.size() - 1));
                             floors.remove(i);
                             leaveCounter.getAndIncrement();
+                          
                         }
                     }
                 }
